@@ -14,15 +14,15 @@ This README provides an in-depth explanation of a TypeScript code example that d
       - [User](#user)
     - [Use Cases](#use-cases)
       - [Interactor](#interactor)
-      - [I/O Data](#io-data)
     - [Interface Adapters](#interface-adapters)
       - [Controller](#controller)
       - [Presenter](#presenter)
-      - [ViewModel](#viewmodel)
       - [Repository](#repository)
     - [Frameworks and Drivers](#frameworks-and-drivers)
       - [Database](#database)
     - [Crossing Boundaries](#crossing-boundaries)
+      - [I/O Data](#io-data)
+      - [View Model](#view-model)
   - [Running the Example](#running-the-example)
   - [Conclusion](#conclusion)
 
@@ -101,6 +101,7 @@ a database.
   Controller --> User : displayUser(viewModel)
 @enduml
 ```
+
 The diagram depicts a data-fetching process in a web-based TypeScript system with a database:
 
 1. **User**: Initiates action (e.g., fetching a user), which is handled by the **Controller** (`interface-adapters/controller.ts`).
@@ -151,13 +152,6 @@ class Interactor implements InteractorInterface {
 }
 ```
 
-#### I/O Data
-
-Input and Output Data classes are used to pass data between boundaries. In this example, these data classes can be found in the `use-cases` directory:
-
-- `input-data.ts`: Handles input data to the Interactor.
-- `output-data.ts`: Handles output data that comes as a result of the use cases.
-
 ### Interface Adapters
 
 #### Controller
@@ -191,18 +185,6 @@ class Presenter implements PresenterInterface {
   present(outputData: OutputData): void {
     // ...
   }
-}
-```
-
-#### ViewModel
-
-The ViewModel is used as an intermediate data structure between the Presenter and the View. In this example, the ViewModel is a simple interface with optional properties for the user's ID and username. It can be found in the `interface-adapters/interfaces` directory, within the `view-model.ts` file.
-
-```typescript
-// view-model.ts
-interface ViewModel {
-  id?: string;
-  username?: string;
 }
 ```
 
@@ -251,6 +233,39 @@ class Database<T> implements DatabaseInterface<T> {
 Crossing boundaries in Clean Architecture means passing data through different layers (e.g., from use cases to interface adapters). In this example, this is demonstrated via the use of InputData, OutputData, and ViewModel classes.
 
 When the Controller receives user input, it creates an instance of InputData, populates it with the necessary information, and passes it to the Interactor. The Interactor communicates with the Repository to fetch/store data, creates an instance of OutputData, and passes it to the Presenter. The Presenter then updates the ViewModel with the relevant information from the OutputData. The original data crosses multiple boundaries, being transformed along the way to ensure separation of concerns and decoupling between layers.
+
+#### I/O Data
+
+Input and Output Data classes are used to pass data between boundaries. In this example, these data classes can be found in the `use-cases` directory:
+
+`input-data.ts`: Handles input data to the Interactor.
+
+```typescript
+// input-data.ts
+class InputData {
+  constructor(public id: string, public username?: string) {}
+}
+```
+
+`output-data.ts`: Handles output data that comes as a result of the use cases.
+
+```typescript
+// input-data.ts
+class OutputData {
+  constructor(public id: string, public username: string) {}
+}
+```
+
+#### View Model
+
+The View Model is used as an intermediate data structure between the Presenter and the View. In this example, the View Model is a simple interface with optional properties for the user's ID and username. It can be found in the `interface-adapters/interfaces` directory, within the `view-model.ts` file.
+
+```typescript
+// view-model.ts
+class ViewModel {
+  constructor(public id: string, public username?: string) {}
+```
+
 
 ## Running the Example
 
