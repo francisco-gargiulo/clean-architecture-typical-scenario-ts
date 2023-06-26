@@ -1,10 +1,10 @@
-const ViewModel: ViewModel = {};
-
-const presenter = new Presenter(ViewModel);
-
 const database = new Database<User>();
+
 const repository = new Repository(database);
 
+const viewModel: ViewModel = {};
+
+const presenter = new Presenter(viewModel);
 const interactor = new Interactor(repository, presenter);
 
 const controller = new Controller(interactor);

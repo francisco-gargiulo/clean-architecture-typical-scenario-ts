@@ -9,7 +9,7 @@ This README provides an in-depth explanation of a TypeScript code example that d
   - [Introduction](#introduction)
   - [Requirements and Installation](#requirements-and-installation)
   - [Running the Example](#running-the-example)
-  - [Project Overview](#project-overview)
+  - [Process Overview](#process-overview)
   - [Architecture Overview](#architecture-overview)
   - [Folder Structure](#folder-structure)
     - [Entities](#entities)
@@ -49,7 +49,7 @@ To run the example, compile the TypeScript code and execute the resulting JavaSc
 tsc && node main.js
 ```
 
-## Project Overview
+## Process Overview
 
 The process starts with the web server, which collects input data from the user and transfers it to the Controller. The Controller encapsulates this data into a conventional object, which is then routed through the InputData to the Interactor.
 
@@ -173,6 +173,9 @@ my-project/
 │   └── output-data.ts
 └── main.ts
 ```
+*Note that the `interfaces` folder is included in each layer, as it is used to define the interfaces for the adapters.*
+
+The folders are organized as follows:
 
 - `entities`: Contains the `User` class.
 - `use-cases`: Contains the Interactor, InputData, and OutputData classes.
