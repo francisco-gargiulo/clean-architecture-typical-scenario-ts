@@ -87,19 +87,14 @@ Interaction Diagram:
 
 The project showcases an architecture that is divided into four layers:
 
-1. Entities
-2. Use Cases
-3. Interface Adapters
-4. Frameworks and Drivers
-
-These layers help isolate each concern and create a clear separation between business rules, UI, database, and external agencies. This separation results in a more understandable, flexible, and maintainable system.
-
 1. **Entities** represent the domain objects in the system, such as the `User` class.
 2. **Use Cases** define the application's main actions and coordinate communication between entities and interface adapters. The `Interactor` orchestrates these actions and dependencies.
 3. **Interface Adapters** act as the bridge between the core business logic and the technologies used in the application. This layer comprises the `Controller`, which processes user input, alongside the `Repository` for data persistence, and the `Presenter` for displaying output data.
 4. **Frameworks and Drivers** implement the technological aspects of the system, such as the `Database` class, which provides a simple in-memory data store.
 
-The following diagram illustrates the dependencies between the layers:
+These layers help isolate each concern and create a clear separation between business rules, UI, database, and external agencies. This separation results in a more understandable, flexible, and maintainable system.
+
+The following diagram illustrates the dependencies between them:
 
 ```plantuml
 @startuml
