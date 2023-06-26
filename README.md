@@ -8,6 +8,7 @@ This README provides an in-depth explanation of a TypeScript code example that d
   - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Requirements and Installation](#requirements-and-installation)
+  - [Running the Example](#running-the-example)
   - [Project Structure](#project-structure)
   - [Architecture Overview](#architecture-overview)
     - [Entities](#entities)
@@ -23,7 +24,6 @@ This README provides an in-depth explanation of a TypeScript code example that d
     - [Crossing Boundaries](#crossing-boundaries)
       - [I/O Data](#io-data)
       - [View Model](#view-model)
-  - [Running the Example](#running-the-example)
   - [Conclusion](#conclusion)
 
 ## Introduction
@@ -36,6 +36,14 @@ This example requires Node.js and TypeScript to be installed on your machine. To
 
 ```sh
 npm install
+```
+
+## Running the Example
+
+To run the example, compile the TypeScript code and execute the resulting JavaScript using Node.js, like so:
+
+```sh
+tsc && node main.js
 ```
 
 ## Project Structure
@@ -264,15 +272,6 @@ The View Model is used as an intermediate data structure between the Presenter a
 // view-model.ts
 class ViewModel {
   constructor(public id: string, public username?: string) {}
-```
-
-
-## Running the Example
-
-To run the example, compile the TypeScript code and execute the resulting JavaScript using Node.js, like so:
-
-```sh
-tsc && node main.js
 ```
 
 ## Conclusion
