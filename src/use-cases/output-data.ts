@@ -1,3 +1,5 @@
-class OutputData {
-  constructor(public id: string, public username: string) {}
+interface OutputData {
+  id: string;
+  username?: string;
+  password?: string;
 }

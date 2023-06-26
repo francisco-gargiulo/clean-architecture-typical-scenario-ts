@@ -1,3 +1,5 @@
-class InputData {
-  constructor(public id: string, public username?: string, public password?: string) {}
+interface InputData {
+  id: string;
+  username?: string;
+  password?: string;
 }

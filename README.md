@@ -9,8 +9,9 @@ This README provides an in-depth explanation of a TypeScript code example that d
   - [Introduction](#introduction)
   - [Requirements and Installation](#requirements-and-installation)
   - [Running the Example](#running-the-example)
-  - [Project Structure](#project-structure)
+  - [Project Overview](#project-overview)
   - [Architecture Overview](#architecture-overview)
+  - [Folder Structure](#folder-structure)
     - [Entities](#entities)
       - [User](#user)
     - [Use Cases](#use-cases)
@@ -28,7 +29,9 @@ This README provides an in-depth explanation of a TypeScript code example that d
 
 ## Introduction
 
-Please note that the content of this document is based on Chapter 22 of "The Clean Architecture" book by Robert C. Martin. The TypeScript code example that follows is structured according to the typical scenario diagram illustrated in Figure 22.2 of the aforementioned book.
+The main concept of this document is based on "Clean Architecture: A Craftsman's Guide to Software Structure and Design" book by Robert C. Martin.
+
+The Clean Architecture concept aims to achieve separation of concerns by dividing the software application into layers. These layers help in isolating business rules, UI, database, and external agencies from each other. This separation is intended to make the system more understandable, flexible, and maintainable. The primary focus is on the use of a domain-centric architecture where the domain logic is at the core and is independent of external concerns like databases and frameworks.
 
 ## Requirements and Installation
 
@@ -46,7 +49,101 @@ To run the example, compile the TypeScript code and execute the resulting JavaSc
 tsc && node main.js
 ```
 
-## Project Structure
+## Project Overview
+
+The process starts with the web server, which collects input data from the user and transfers it to the Controller. The Controller encapsulates this data into a conventional object, which is then routed through the InputData to the Interactor.
+
+The Interactor deciphers this data, employing it to choreograph the movements of the Entities. Simultaneously, it harnesses the Repository to retrieve the data necessary for these Entities from the Database, loading it into memory. Upon completion, the Interactor amasses data from the Entities and shapes the OutputData into another unadorned object. This OutputData is subsequently passed through the OutputBoundary interface to the Presenter.
+
+The key responsibility of the Presenter is to reformat the OutputData into a viewable form as the ViewModel, which takes the form of yet another plain object. The ViewModel primarily comprises Strings and flags that the View employs to exhibit the data. While the OutputData might include Date objects, the Presenter populates the ViewModel with corresponding Strings already properly formatted for the user. 
+
+Consequently, the View is left with the simple task of transferring the data from the ViewModel into the HTML page.
+
+Interaction Diagram:
+
+```plantuml
+@startuml
+  actor User
+  participant Controller
+  participant Interactor
+  participant Repository
+  participant Presenter
+  participant ViewModel
+
+  User -> Controller : getUser(id)
+  Controller -> Interactor : executeGetUser(inputData)
+  Interactor -> Repository : getUser(id)
+  Repository --> Interactor : user
+  Interactor -> Presenter : present(outputData)
+  Presenter -> ViewModel : update(viewModel)
+  Presenter --> Interactor : viewModel
+  Interactor --> Controller : viewModel
+  Controller --> User : displayUser(viewModel)
+@enduml
+```
+*The above diagram illustrates the flow of data between the components for a single use case.*
+
+## Architecture Overview
+
+The project showcases an architecture that is divided into four layers:
+
+1. Entities
+2. Use Cases
+3. Interface Adapters
+4. Frameworks and Drivers
+
+These layers help isolate each concern and create a clear separation between business rules, UI, database, and external agencies. This separation results in a more understandable, flexible, and maintainable system.
+
+1. **Entities** represent the domain objects in the system, such as the `User` class.
+2. **Use Cases** define the application's main actions and coordinate communication between entities and interface adapters. The `Interactor` orchestrates these actions and dependencies.
+3. **Interface Adapters** act as the bridge between the core business logic and the technologies used in the application. This layer comprises the `Controller`, which processes user input, alongside the `Repository` for data persistence, and the `Presenter` for displaying output data.
+4. **Frameworks and Drivers** implement the technological aspects of the system, such as the `Database` class, which provides a simple in-memory data store.
+
+The following diagram illustrates the dependencies between the layers:
+
+```plantuml
+@startuml
+
+package "Entities" {
+  [User]
+}
+
+package "Framework and Drivers" {
+  [Database]
+}
+
+package "Interface Adapters" {
+  [Controller]
+  [Presenter]
+  [Repository]
+  [ViewModel]
+  interface DatabaseInterface
+  interface ViewModelInterface
+}
+
+package "Use Cases" {
+  [Interactor]
+  interface "PresenterInterface"
+  interface "RepositoryInterface"
+}
+
+[Controller] --> [Interactor] : uses
+[Presenter] --> [PresenterInterface] : implements
+[Repository] --> [RepositoryInterface] : implements
+[Interactor] --> [PresenterInterface] : uses
+[Interactor] --> [RepositoryInterface] : uses
+[ViewModel] --> [ViewModelInterface] : implements
+[Presenter] --> [ViewModelInterface] : uses
+[Repository] --> [DatabaseInterface] : uses
+[Database] --> [DatabaseInterface] : implements
+[Interactor] --> [User] : uses
+
+@enduml
+
+```
+*Take note of the directions of the dependencies. All dependencies traverse the boundary lines, directing inward, adhering to the Dependency Rule.*
+
+## Folder Structure
 
 The project is organized into the following folder structure:
 
@@ -82,49 +179,6 @@ my-project/
 - `interface-adapters`: Contains the Controller, Presenter, ViewModel, and Repository classes, as well as interfaces for adapters.
 - `framework-and-drivers`: Contains concrete implementations such as the mock Database class.
 - The root folder also includes the `main.ts` file, which demonstrates the usage of the components in a simple application flow.
-
-## Architecture Overview
-
-The following shows a typical scenario for a web-based Typescript system using
-a database. 
-
-
-```plantuml
-@startuml
-  actor User
-  participant Controller
-  participant Interactor
-  participant Repository
-  participant Presenter
-  participant ViewModel
-
-  User -> Controller : (1) getUser(id)
-  Controller -> Interactor : (2) executeGetUser(inputData)
-  Interactor -> Repository : (3) getUser(id)
-  Repository --> Interactor : (4) user
-  Interactor -> Presenter : (5) present(outputData)
-  Presenter -> ViewModel : (6) update(viewModel)
-  Presenter --> Interactor : (7) viewModel
-  Interactor --> Controller : viewModel
-  Controller --> User : displayUser(viewModel)
-@enduml
-```
-
-The diagram depicts a data-fetching process in a web-based TypeScript system with a database:
-
-1. **User**: Initiates action (e.g., fetching a user), which is handled by the **Controller** (`interface-adapters/controller.ts`).
-
-2. **Controller**: Packages input into `InputData` (`use-cases/input-data.ts`) and sends it to the **Interactor**.
-
-3. **Interactor** (`use-cases/interactor.ts`): Processes input data, controls interaction between entities and **Repository** for data retrieval/storage.
-
-4. **Repository** (`interface-adapters/repository.ts`): Manages data persistence, communicating with an in-memory **Database** (`framework-and-drivers/database.ts`).
-
-5. **Interactor**: Creates an `OutputData` object (`use-cases/output-data.ts`) with retrieved data and passes it to **Presenter**.
-
-6. **Presenter** (`interface-adapters/presenter.ts`): Converts output data into a **ViewModel** (`interface-adapters/interfaces/view-model.ts`) for display.
-
-7. Application displays formatted data to the user through the View.
 
 
 ### Entities
