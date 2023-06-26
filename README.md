@@ -63,14 +63,14 @@ Interaction Diagram:
 
 ```plantuml
 @startuml
-  actor User
+  participant Web
   participant Controller
   participant Interactor
   participant Repository
   participant Presenter
   participant ViewModel
 
-  User -> Controller : getUser(id)
+  Web -> Controller : getUser(id)
   Controller -> Interactor : executeGetUser(inputData)
   Interactor -> Repository : getUser(id)
   Repository --> Interactor : user
@@ -78,7 +78,7 @@ Interaction Diagram:
   Presenter -> ViewModel : update(viewModel)
   Presenter --> Interactor : viewModel
   Interactor --> Controller : viewModel
-  Controller --> User : displayUser(viewModel)
+  Controller --> Web : displayUser(viewModel)
 @enduml
 ```
 *The above diagram illustrates the flow of data between the components for a single use case.*
@@ -110,13 +110,13 @@ package "Entities" {
 
 package "Framework and Drivers" {
   [Database]
+  [Web]
 }
 
 package "Interface Adapters" {
   [Controller]
   [Presenter]
   [Repository]
-  [ViewModel]
   interface DatabaseInterface
   interface ViewModelInterface
 }
@@ -127,12 +127,12 @@ package "Use Cases" {
   interface "RepositoryInterface"
 }
 
+[Web] --> [ViewModelInterface] : implements
 [Controller] --> [Interactor] : uses
 [Presenter] --> [PresenterInterface] : implements
 [Repository] --> [RepositoryInterface] : implements
 [Interactor] --> [PresenterInterface] : uses
 [Interactor] --> [RepositoryInterface] : uses
-[ViewModel] --> [ViewModelInterface] : implements
 [Presenter] --> [ViewModelInterface] : uses
 [Repository] --> [DatabaseInterface] : uses
 [Database] --> [DatabaseInterface] : implements
